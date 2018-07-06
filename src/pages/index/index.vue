@@ -7,11 +7,12 @@
     <card></card>
     <search></search>
     <div class="body">
-      <div v-for="item in items" :key="item.id" class="modules" @click="read_dirs(item.id, item.name)" >{{ item.name }}</div>
+      <div v-for="item in items" :key="item.id" class="modules" @click="read_dirs(item.id, item.display)" >{{ item.display }}</div>
     </div>
   </div>
 </template>
 
+<script src="https://unpkg.com/flyio/dist/fly.min.js"></script>
 <script>
 import search from '@/components/search'
 import card from '@/components/card'
@@ -19,62 +20,28 @@ import card from '@/components/card'
 export default {
   data () {
     return {
-      items: [
-        {
-          id: 0,
-          name: '四十二章经'
-        },
-        {
-          id: 1,
-          name: '圆觉经'
-        },
-        {
-          id: 2,
-          name: '金刚经'
-        },
-        {
-          id: 3,
-          name: '心经'
-        },
-        {
-          id: 4,
-          name: '法华经'
-        },
-        {
-          id: 5,
-          name: '楞严经'
-        },
-        {
-          id: 6,
-          name: '无量寿经'
-        },
-        {
-          id: 7,
-          name: '坛经'
-        },
-        {
-          id: 8,
-          name: '法华经'
-        },
-        {
-          id: 9,
-          name: '楞严经'
-        },
-        {
-          id: 10,
-          name: '无量寿经'
-        },
-        {
-          id: 11,
-          name: '坛经'
-        }
-      ]
+      items: ''
     }
   },
 
   components: {
     search,
     card
+  },
+
+  created () {
+    var that = this
+    var Fly = require('flyio/dist/npm/wx')
+    // 创建fly实例
+    var fly = new Fly()
+    // query参数通过对象传递，获取藏经阅读列表
+    fly.get('https://gwfy3.applinzi.com/wenbai/today_list')
+      .then(function (response) {
+        that.items = response.data
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   },
 
   methods: {
@@ -101,7 +68,8 @@ export default {
   font-size:32rpx;
   display:flex;
   flex-wrap:wrap;
-  justify-content:center;
+  justify-content:flex-start;
+  margin-left:28rpx;
 }
 
 .modules {

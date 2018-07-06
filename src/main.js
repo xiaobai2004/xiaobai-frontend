@@ -34,7 +34,7 @@ export default {
         'iconPath': 'static/icon/group.png',
         'selectedIconPath': 'static/icon/group_selected.png'
       }, {
-        'pagePath': 'pages/index/main',
+        'pagePath': 'pages/user/main',
         'text': '我的',
         'iconPath': 'static/icon/user.png',
         'selectedIconPath': 'static/icon/user_selected.png'

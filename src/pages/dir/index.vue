@@ -76,6 +76,20 @@ export default {
   onLoad: function (options) {
     this.no_id = options.no_id
     this.no_name = options.no_name
+
+    var that = this
+    var Fly = require('flyio/dist/npm/wx')
+    // 创建fly实例
+    var fly = new Fly()
+    // query参数通过对象传递，获取经书小节
+    fly.get('https://gwfy3.applinzi.com/wenbai/scripture/' + that.no_id + '/section_id_list')
+      .then(function (response) {
+        that.items = response.data
+        console.log(that.items)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
   },
 
   methods: {
