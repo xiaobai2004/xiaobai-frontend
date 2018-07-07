@@ -7,7 +7,7 @@
     <card></card>
     <div class="body">
       <div v-for="item in items" :key="item.dir_id">
-        <div class="modules" @click="read_scriptures(item.dir_id, item.dir_name)">
+        <div class="modules" @click="read_scriptures(item, item.dir_name)">
           <div class="modules_name"> {{ no_name }} </div>
           <div class="dirs"> {{ item.dir_name }} </div>
         </div>
@@ -28,44 +28,7 @@ export default {
       // 经书名称
       no_name: '',
       // 经书目录列表
-      items: [
-        {
-          id: 0,
-          name: '四十二章经',
-          dir_id: 0,
-          dir_name: '经序'
-        },
-        {
-          id: 1,
-          name: '四十二章经',
-          dir_id: 1,
-          dir_name: '出家正果'
-        },
-        {
-          id: 2,
-          name: '四十二章经',
-          dir_id: 2,
-          dir_name: '断欲绝求'
-        },
-        {
-          id: 3,
-          name: '四十二章经',
-          dir_id: 3,
-          dir_name: '出家正果'
-        },
-        {
-          id: 4,
-          name: '四十二章经',
-          dir_id: 4,
-          dir_name: '断欲绝求'
-        },
-        {
-          id: 5,
-          name: '四十二章经',
-          dir_id: 5,
-          dir_name: '出家正果'
-        }
-      ]
+      items: ''
     }
   },
 
@@ -84,7 +47,7 @@ export default {
     // query参数通过对象传递，获取经书小节
     fly.get('https://gwfy3.applinzi.com/wenbai/scripture/' + that.no_id + '/section_id_list')
       .then(function (response) {
-        that.items = response.data
+        that.items = response.data.section_id_list
         console.log(that.items)
       })
       .catch(function (error) {
@@ -95,13 +58,9 @@ export default {
   methods: {
     // 查看经文章节详情
     read_scriptures (id, name) {
-      const url = '../detail/main'
+      const url = '../detail/main?no_id=' + this.no_id + '&no_name=' + this.no_name + '&id=' + id + '&name=' + name
       wx.navigateTo({
-        url: url,
-        data: {
-          id: id,
-          name: name
-        }
+        url: url
       })
     }
   }

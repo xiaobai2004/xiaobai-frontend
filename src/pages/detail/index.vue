@@ -16,13 +16,13 @@
         <div v-for="item in items" :key="item.dir_id" class="dir_item">
           <div class="text">
             <div v-if="tab === 'original' || tab === 'or_with_ver'">
-              <div class="original"> {{ item.original }} </div>
+              <div class="original"> {{ item.classic }} </div>
             </div>
             <div v-if="tab === 'vernacular' || tab === 'or_with_ver'">
-              <div class="vernacular"> {{ item.vernacular }} </div>
+              <div class="vernacular"> {{ item.modern }} </div>
             </div>
             <div v-if="tab === 'comment'">
-              <div class="comment"> {{ item.comment }} </div>
+              <div class="comment"> {{ item.annotation }} </div>
             </div>
           </div>
         </div>
@@ -49,6 +49,10 @@
         original: [],
         vernacular: [],
         comment: [],
+        // 经文ID
+        no_id: '',
+        // 章节ID
+        sec_id: '',
         items: [
           {
             id: 0,
@@ -89,6 +93,25 @@
         ]
       }
     },
+
+    onLoad: function (options) {
+      this.no_id = options.no_id
+      this.sec_id = options.id
+
+      var that = this
+      var Fly = require('flyio/dist/npm/wx')
+      // 创建fly实例
+      var fly = new Fly()
+      // query参数通过对象传递，获取经书小节
+      fly.get('https://gwfy3.applinzi.com/wenbai/scripture/' + that.no_id + '/section/' + that.sec_id + '/sentences')
+        .then(function (response) {
+          that.items = response.data.sentences
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    },
+
     components: {
       card
     },

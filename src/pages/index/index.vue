@@ -35,10 +35,10 @@ export default {
     // 创建fly实例
     var fly = new Fly()
     // query参数通过对象传递，获取藏经阅读列表
-    fly.get('https://gwfy3.applinzi.com/wenbai/today_list')
-      .then(function (response) {
+    fly.all([fly.get('https://gwfy3.applinzi.com/wenbai/today_list'), fly.get('https://gwfy3.applinzi.com/wenbai/today_list')])
+      .then(fly.spread(function (response) {
         that.items = response.data
-      })
+      }))
       .catch(function (error) {
         console.log(error)
       })
