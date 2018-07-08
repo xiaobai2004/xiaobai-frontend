@@ -242,7 +242,7 @@
   }
 
   .focus_on:active {
-    background-color: #e5f2ff;
+    background-color: #e5e5e5;
   }
 
   .focus_on {
