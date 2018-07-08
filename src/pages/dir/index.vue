@@ -6,10 +6,10 @@
   <div class="container">
     <card></card>
     <div class="body">
-      <div v-for="item in items" :key="item.dir_id">
-        <div class="modules" @click="read_scriptures(item, item.dir_name)">
+      <div v-for="(item, index) in section_id_list">
+        <div class="modules" @click="read_scriptures(item, section_display_list[index])">
           <div class="modules_name"> {{ no_name }} </div>
-          <div class="dirs"> {{ item.dir_name }} </div>
+          <div class="dirs"> {{ section_display_list[index] }} </div>
         </div>
       </div>
     </div>
@@ -28,7 +28,8 @@ export default {
       // 经书名称
       no_name: '',
       // 经书目录列表
-      items: ''
+      section_id_list: '',
+      section_display_list: ''
     }
   },
 
@@ -47,8 +48,8 @@ export default {
     // query参数通过对象传递，获取经书小节
     fly.get('https://gwfy3.applinzi.com/wenbai/scripture/' + that.no_id + '/section_id_list')
       .then(function (response) {
-        that.items = response.data.section_id_list
-        console.log(that.items)
+        that.section_id_list = response.data.section_id_list
+        that.section_display_list = response.data.section_display_list
       })
       .catch(function (error) {
         console.log(error)

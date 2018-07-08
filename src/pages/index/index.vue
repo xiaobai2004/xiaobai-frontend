@@ -30,27 +30,43 @@ export default {
   },
 
   created () {
-    var that = this
-    var Fly = require('flyio/dist/npm/wx')
-    // 创建fly实例
-    var fly = new Fly()
-    // query参数通过对象传递，获取藏经阅读列表
-    fly.all([fly.get('https://gwfy3.applinzi.com/wenbai/today_list'), fly.get('https://gwfy3.applinzi.com/wenbai/today_list')])
-      .then(fly.spread(function (response) {
-        that.items = response.data
-      }))
-      .catch(function (error) {
-        console.log(error)
-      })
+    // 微信登录授权
+    this.login()
+    // 获取经书列表
+    this.get_items()
   },
 
   methods: {
+    // 登录授权
+    login () {
+    },
     // 查看经文章节目录
     read_dirs (id, name) {
-      const url = '../dir/main?no_id=' + id + '&no_name=' + name
+      var url = '../dir/main?no_id=' + id + '&no_name=' + name
       wx.navigateTo({
         url: url
       })
+    },
+
+    // 获取经书列表
+    get_items () {
+      var that = this
+      var Fly = require('flyio/dist/npm/wx')
+      console.log(that.userInfo)
+      // 创建fly实例
+      var fly = new Fly()
+      // query参数通过对象传递，获取藏经阅读列表
+      fly.get('https://gwfy3.applinzi.com/wenbai/today_list')
+        .then(function (response) {
+          that.items = response.data
+        })
+        .catch(function (error) {
+          console.log(error)
+          fly.get('https://gwfy3.applinzi.com/wenbai/today_list')
+            .then(function (response) {
+              that.items = response.data
+            })
+        })
     }
   }
 }

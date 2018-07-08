@@ -30,9 +30,9 @@
     </div>
     
     <div class="footer">
-      <div class="previous" @click.stop='change_chapter($event)'>上一章</div>
-      <div class="collect" @click.stop='change_chapter($event)'><i class="material-icons">favorite_border</i></div>
-      <div class="next" @click.stop='change_chapter($event)'>下一章</div>
+      <div :class="{ set_gray: prev_section_url.length === 0, focus_on: true}" @click.stop='change_chapter(prev_section_url)'>上一章</div>
+      <div :class="collect" :disabled="isDisable" @click.stop='change_chapter()'><i class="material-icons">favorite_border</i></div>
+      <div :class="{ set_gray: next_section_url.length === 0, focus_on: true}" @click.stop='change_chapter(next_section_url)'>下一章</div>
     </div>
   </div>
 </template>
@@ -53,75 +53,78 @@
         no_id: '',
         // 章节ID
         sec_id: '',
-        items: [
-          {
-            id: 0,
-            original: '复次，阿难，云何六入本如来藏妙真如性？',
-            vernacular: '阿难，为什么说六入本来就是如来自性妙明真如呢？',
-            comment: ''
-          },
-          {
-            id: 1,
-            original: '阿难，即彼目睛瞪发劳者，兼目与劳，同是菩提瞪发劳相。',
-            vernacular: '阿难，眼睛凝视已久就有了烦劳发花，而这眼睛和烦劳发花，都是菩提真如的凝视已久烦劳发花的相状。',
-            comment: ''
-          },
-          {
-            id: 2,
-            original: '因于明暗两种妄尘，发见居中，吸此尘象，名为见性。',
-            vernacular: '观见生起在明和暗两种尘物妄起之中，通过看而汲取了两种尘象，这就叫做观见。 ',
-            comment: ''
-          },
-          {
-            id: 3,
-            original: '此见离彼明暗二尘，毕竟无体。',
-            vernacular: '这个见离开了明、暗两种物象，毕竟没有自身本体。',
-            comment: ''
-          },
-          {
-            id: 4,
-            original: '如是，阿难，当知是见非明暗来，非于根出，不于空生。',
-            vernacular: '那么，阿难，应当知道这个见，不是从明和暗这里来，不是从眼根里来，也不是从空无里产生。',
-            comment: '注释'
-          },
-          {
-            id: 5,
-            original: '何以故？',
-            vernacular: '为什么呢？',
-            comment: ''
-          }
-        ]
+        // 上一节链接
+        prev_section_url: '',
+        // 下一节链接
+        next_section_url: '',
+        // 域名
+        domain: 'https://gwfy3.applinzi.com',
+        // 请求链接
+        request_url: '',
+        // 段列表
+        items: ''
       }
     },
 
     onLoad: function (options) {
+      // 设置链接
       this.no_id = options.no_id
       this.sec_id = options.id
+      this.request_url = this.domain + '/wenbai/scripture/' + this.no_id + '/section/' + this.sec_id + '/sentences'
+      // 设置导航栏标题
+      wx.setNavigationBarTitle({
+        title: options.name
+      })
 
-      var that = this
-      var Fly = require('flyio/dist/npm/wx')
-      // 创建fly实例
-      var fly = new Fly()
-      // query参数通过对象传递，获取经书小节
-      fly.get('https://gwfy3.applinzi.com/wenbai/scripture/' + that.no_id + '/section/' + that.sec_id + '/sentences')
-        .then(function (response) {
-          that.items = response.data.sentences
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      // 请求章节列表
+      this.get_chapter()
     },
 
     components: {
       card
     },
+
     methods: {
       // 切换 tab
       change_tab (e) {
         this.tab = e.target.dataset.tab
       },
       // 切换章节
-      change_chapter (e) {
+      change_chapter (url) {
+        if (url.trim().length !== 0) {
+          this.request_url = this.domain + url
+          this.get_chapter()
+        }
+      },
+      // 获取章节列表
+      get_chapter () {
+        var that = this
+        var Fly = require('flyio/dist/npm/wx')
+        // 创建fly实例
+        var fly = new Fly()
+        // query参数通过对象传递，获取经书小节
+        fly.get(that.request_url)
+          .then(function (response) {
+            that.items = response.data.sentences
+            console.log(response.data)
+            that.prev_section_url = response.data.prev_section_url
+            that.next_section_url = response.data.next_section_url
+            // 设置导航栏标题
+            wx.setNavigationBarTitle({
+              title: response.data.section_display
+            })
+            // 按钮置灰
+            if (that.prev_section_url.length === 0) {
+
+            }
+
+            if (that.prev_section_url.length === 0) {
+
+            }
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
       }
     }
   }
@@ -214,7 +217,7 @@
   }
 
   .footer div {
-    width: 33%;
+    width: 34%;
     text-align: center;
   }
 
@@ -228,5 +231,21 @@
   }
   .footer .material-icons {
     line-height:inherit;
+  }
+
+  .set_gray {
+    color: #ddd;
+  }
+
+  .set_black {
+    color: black;
+  }
+
+  .focus_on:active {
+    background-color: #e5f2ff;
+  }
+
+  .focus_on {
+    border-radius: 10%;
   }
 </style>
