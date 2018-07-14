@@ -123,6 +123,25 @@
             }
           })
           .catch(function (error) {
+            fly.get(that.request_url)
+              .then(function (response) {
+                that.items = response.data.sentences
+                console.log(response.data)
+                that.prev_section_url = response.data.prev_section_url
+                that.next_section_url = response.data.next_section_url
+                // 设置导航栏标题
+                wx.setNavigationBarTitle({
+                  title: response.data.section_display
+                })
+                // 按钮置灰
+                if (that.prev_section_url.length === 0) {
+
+                }
+
+                if (that.prev_section_url.length === 0) {
+
+                }
+              })
             console.log(error)
           })
       }

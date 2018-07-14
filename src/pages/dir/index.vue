@@ -52,6 +52,11 @@ export default {
         that.section_display_list = response.data.section_display_list
       })
       .catch(function (error) {
+        fly.get('https://gwfy3.applinzi.com/wenbai/scripture/' + that.no_id + '/section_id_list')
+          .then(function (response) {
+            that.section_id_list = response.data.section_id_list
+            that.section_display_list = response.data.section_display_list
+          })
         console.log(error)
       })
   },
